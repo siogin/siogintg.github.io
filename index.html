@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sergey Grigoriev | GRIF TON Ecosystem</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --text: #ffffff;
+            --primary: #25d366;
+            --accent: #ff6b6b;
+            --card-bg: #1a1a1a;
+            --tg-blue: #3390ec;
+            --matrix-green: #00ff88;
+            --font-mono: 'Fira Code', monospace;
+            --font-sans: 'Inter', sans-serif;
+            --tg-filter: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            filter: var(--tg-filter);
+            transition: all 0.3s ease;
+        }
+
+        .glitch-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            opacity: 0.05;
+            background: 
+                linear-gradient(90deg, var(--primary) 1px, transparent 1px),
+                linear-gradient(180deg, var(--primary) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 1rem;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: var(--font-mono);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-mono);
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(37, 211, 102, 0.3);
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            animation: underline 3s infinite;
+        }
+
+        @keyframes underline {
+            0% { width: 0; left: 0 }
+            50% { width: 100%; left: 0 }
+            100% { width: 0; left: 100% }
+        }
+
+        .hero-subtitle {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            font-family: var(--font-mono);
+        }
+
+        .ton-payment {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 3rem auto;
+            max-width: 600px;
+            border: 1px solid rgba(37, 211, 102, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ton-payment::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent,
+                transparent,
+                transparent,
+                rgba(0, 255, 136, 0.1)
+            );
+            transform: rotate(30deg);
+            animation: shine 6s infinite;
+        }
+
+        .ton-address {
+            display: block;
+            font-family: var(--font-mono);
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+            word-break: break-all;
+            position: relative;
+            border: 1px solid var(--primary);
+        }
+
+        .ton-button {
+            background: #001fcc;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ton-button:hover {
+            background: #0a0099;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 48, 204, 0.4);
+        }
+
+        .ton-button img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .timeline {
+            display: grid;
+            gap: 3rem;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: var(--primary);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            position: relative;
+            width: calc(50% - 2rem);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid rgba(37, 211, 102, 0.1);
+        }
+
+        .timeline-item:nth-child(odd) {
+            margin-right: auto;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-left: auto;
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 1rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(37, 211, 102, 0.1);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(
+                to right,
+                transparent,
+                rgba(255,255,255,0.05),
+                transparent
+            );
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            100% {
+                left: 150%;
+            }
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.1);
+            border-color: rgba(37, 211, 102, 0.3);
+        }
+
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 4rem 0;
+        }
+
+        .username-item {
+            padding: 1rem;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            text-align: center;
+            font-family: var(--font-mono);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            transition: all 0.3s;
+        }
+
+        .username-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.1);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .cyber-section {
+            text-align: center;
+            padding: 6rem 0;
+            position: relative;
+        }
+
+        .cyber-text {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            color: var(--matrix-green);
+            text-shadow: 0 0 20px var(--matrix-green);
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2rem;
+            border: 2px solid var(--matrix-green);
+            border-radius: 0.5rem;
+            animation: glitch 1s infinite alternate;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0) }
+            20% { transform: translate(-2px, 2px) }
+            40% { transform: translate(-2px, -2px) }
+            60% { transform: translate(2px, 2px) }
+            80% { transform: translate(2px, -2px) }
+            100% { transform: translate(0) }
+        }
+
+        .footer {
+            border-top: 1px solid var(--primary);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--primary);
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 2rem;
+            transition: all 0.3s;
+            font-family: var(--font-mono);
+            border: 2px solid var(--primary);
+        }
+
+        .contact-link:hover {
+            background: var(--primary);
+            color: var(--bg);
+        }
+
+        .copy-notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: var(--bg);
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-family: var(--font-mono);
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .timeline::before {
+                left: 1rem;
+            }
+            
+            .timeline-item {
+                width: calc(100% - 2rem);
+                margin-left: 2rem !important;
+            }
+            
+            .cyber-text {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="glitch-wrapper"></div>
+    <div class="copy-notification" id="copyNotification" data-lang="ru">Адрес скопирован!</div>
+    <div class="copy-notification" id="copyNotification" data-lang="en" hidden>Address copied!</div>
+
+    <div class="container">
+        <header class="header">
+            <div class="lang-switcher">
+                <button class="lang-btn active" data-lang="ru">RU</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <h1 class="hero-title" data-lang="ru">@siogin</h1>
+                <h1 class="hero-title" data-lang="en" hidden></h1>
+                
+                <p class="hero-subtitle" data-lang="ru">Frontend developer & Blockchain Engineer</p>
+                <p class="hero-subtitle" data-lang="en" hidden>Frontend developer & Blockchain Engineer</p>
+            </section>
+
+            <section class="ton-payment">
+                <h2 data-lang="ru">Поддержать</h2>
+                <h2 data-lang="en" hidden>Support</h2>
+                
+                <p data-lang="ru">Мой TON-кошелек:</p>
+                <p data-lang="en" hidden>My TON wallet:</p>
+                
+                <code class="ton-address" id="tonAddress">UQDkFhGpqkkM7Fvz-oDEdW-ABnXkWnk-4q1KMl-6R-AsLmB3</code>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="ton-button" id="sendTonBtn">
+                        <img src="ton.svg" alt="TON">
+                        <span data-lang="ru">Отправить TON</span>
+                        <span data-lang="en" hidden>Send TON</span>
+                    </button>
+                    
+                    <button class="ton-button" id="copyAddressBtn" style="background: var(--primary);">
+                        <span data-lang="ru">Копировать адрес</span>
+                        <span data-lang="en" hidden>Copy address</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">2024-2025</div>
+                    <h3 data-lang="ru">Ведущий разработчик GRIF TON</h3>
+                    <h3 data-lang="en" hidden>Lead Developer at GRIF TON</h3>
+                    <p data-lang="ru">Архитектура матрешечного блокчейна, интеграция с TON</p>
+                    <p data-lang="en" hidden>Matryoshka blockchain architecture, TON integration</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">2025</div>
+                    <h3 data-lang="ru">Web Game</h3>
+                    <h3 data-lang="en" hidden>Web Game</h3>
+                    <p data-lang="ru">Разработка веб игр</p>
+                    <p data-lang="en" hidden>Web game Development</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">2025</div>
+                    <h3 data-lang="ru">OS dev</h3>
+                    <h3 data-lang="en" hidden>OS dev</h3>
+                    <p data-lang="ru">Разработка операционной системы</p>
+                    <p data-lang="en" hidden>Operating system development</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">2023-2025</div>
+                    <h3 data-lang="ru">TCB</h3>
+                    <h3 data-lang="en" hidden>TCB</h3>
+                    <p data-lang="ru">Разработка Telegram ботов</p>
+                    <p data-lang="en" hidden>Telegram Bot Development</p>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">2023-2025</div>
+                    <h3 data-lang="ru">Frontend Architect</h3>
+                    <h3 data-lang="en" hidden>Frontend Architect</h3>
+                    <p data-lang="ru">Разработка сложных сайтов</p>
+                    <p data-lang="en" hidden>Developing complex websites</p>
+                </div>
+            </section>
+
+            <section class="projects-grid">
+                <article class="project-card">
+                    <h3>GRIF TON Ecosystem</h3>
+                    <p data-lang="ru">Децентрализованная экосистема с уникальным консенсусом</p>
+                    <p data-lang="en" hidden>Decentralized ecosystem with unique consensus</p>
+                </article>
+                
+                <article class="project-card">
+                    <h3 data-lang="ru">Портфолио</h3>
+                    <h3 data-lang="en" hidden>Portfolio</h3>
+                    <a href="http://grifton.ru/portfolio/" target="_blank" class="contact-link" style="margin-top: 1rem; display: inline-block;">
+                        grifton.ru/portfolio
+                    </a>
+                </article>
+            </section>
+
+            <section class="matrix-grid">
+                <div class="username-item">@ceofbr</div>
+                <div class="username-item">@presedentRussia</div>
+                <div class="username-item">@zelmel</div>
+                <div class="username-item">@ValidatorBitcoin</div>
+                <div class="username-item">@cryptopresedent</div>
+                <div class="username-item">@Rub100000</div>
+                <div class="username-item">@zelmult</div>
+                <div class="username-item">@swiftyton</div>
+            </section>
+
+            <section class="cyber-section">
+                <div class="cyber-text">Are you a 1 or a 0?</div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <a href="https://t.me/siogin" class="contact-link">
+                @siogin
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // ==================== ЯЗЫК И АНИМАЦИЯ ====================
+function initLanguageSystem() {
+    // Создаем эффектный контейнер для кнопок
+    const langContainer = document.querySelector('.lang-switcher');
+    langContainer.innerHTML = '';
+    langContainer.style.position = 'fixed';
+    langContainer.style.top = '2rem';
+    langContainer.style.right = '2rem';
+    langContainer.style.zIndex = '1000';
+    langContainer.style.perspective = '500px';
+
+    // Создаем кнопки с эффектом неонового свечения
+    const ruBtn = createGlitchButton('RU', 'ru');
+    const enBtn = createGlitchButton('EN', 'en');
+    enBtn.style.display = 'none';
+
+    langContainer.appendChild(ruBtn);
+    langContainer.appendChild(enBtn);
+
+    // Текущее состояние
+    let currentLang = localStorage.getItem('preferredLanguage') || 
+                     (navigator.language.startsWith('ru') ? 'ru' : 'en');
+
+    // Функция переключения языка с эффектной анимацией
+    const switchLanguage = async (newLang) => {
+        if (currentLang === newLang) return;
+        
+        // 1. Запускаем эффект перехода
+        await startLanguageTransition();
+        
+        // 2. Переключаем контент
+        document.querySelectorAll('[data-lang]').forEach(el => {
+            el.hidden = el.dataset.lang !== newLang;
+        });
+        
+        // 3. Обновляем кнопки
+        if (newLang === 'ru') {
+            hideButton(enBtn);
+            showButton(ruBtn);
+        } else {
+            hideButton(ruBtn);
+            showButton(enBtn);
+        }
+        
+        currentLang = newLang;
+        localStorage.setItem('preferredLanguage', newLang);
+    };
+
+    // Создаем кнопку с эффектом глитча
+    function createGlitchButton(text, lang) {
+        const btn = document.createElement('button');
+        btn.className = 'lang-btn';
+        btn.textContent = text;
+        btn.dataset.lang = lang;
+        
+        // Эффект неонового свечения
+        btn.style.position = 'relative';
+        btn.style.overflow = 'hidden';
+        btn.style.background = 'none';
+        btn.style.border = '2px solid var(--primary)';
+        btn.style.color = 'var(--primary)';
+        btn.style.padding = '0.5rem 1.5rem';
+        btn.style.borderRadius = '25px';
+        btn.style.fontFamily = 'var(--font-mono)';
+        btn.style.fontWeight = '600';
+        btn.style.cursor = 'pointer';
+        btn.style.transition = 'all 0.3s';
+        btn.style.boxShadow = '0 0 10px rgba(37, 211, 102, 0.3)';
+        
+        // Эффект при наведении
+        btn.addEventListener('mouseenter', () => {
+            btn.style.boxShadow = '0 0 20px rgba(37, 211, 102, 0.6)';
+            btn.style.transform = 'translateY(-2px)';
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+            btn.style.boxShadow = '0 0 10px rgba(37, 211, 102, 0.3)';
+            btn.style.transform = '';
+        });
+        
+        // Клик-эффект
+        btn.addEventListener('click', async () => {
+            btn.style.transform = 'scale(0.95)';
+            setTimeout(() => btn.style.transform = '', 100);
+            await switchLanguage(lang === 'ru' ? 'en' : 'ru');
+        });
+        
+        return btn;
+    }
+
+    // Показать кнопку с анимацией
+    function showButton(btn) {
+        btn.style.display = '';
+        btn.style.animation = 'buttonAppear 0.5s forwards';
+        
+        // Добавляем эффект цифрового появления
+        const digitalEffect = document.createElement('div');
+        digitalEffect.style.position = 'absolute';
+        digitalEffect.style.top = '0';
+        digitalEffect.style.left = '0';
+        digitalEffect.style.width = '100%';
+        digitalEffect.style.height = '100%';
+        digitalEffect.style.background = 'linear-gradient(transparent 0%, var(--primary) 50%, transparent 100%)';
+        digitalEffect.style.opacity = '0';
+        digitalEffect.style.animation = 'digitalFlash 0.8s';
+        btn.appendChild(digitalEffect);
+        
+        setTimeout(() => {
+            btn.removeChild(digitalEffect);
+        }, 800);
+    }
+
+    // Скрыть кнопку с анимацией
+    function hideButton(btn) {
+        btn.style.animation = 'buttonDisappear 0.5s forwards';
+        setTimeout(() => {
+            btn.style.display = 'none';
+            btn.style.animation = '';
+        }, 500);
+    }
+
+    // Эффектная анимация перехода языка
+    async function startLanguageTransition() {
+        // Создаем эффект "цифрового дождя"
+        const matrixRain = document.createElement('div');
+        matrixRain.style.position = 'fixed';
+        matrixRain.style.top = '0';
+        matrixRain.style.left = '0';
+        matrixRain.style.width = '100%';
+        matrixRain.style.height = '100%';
+        matrixRain.style.background = 'var(--bg)';
+        matrixRain.style.zIndex = '9999';
+        matrixRain.style.opacity = '0.9';
+        document.body.appendChild(matrixRain);
+        
+        // Генерируем цифровой дождь
+        createMatrixEffect(matrixRain);
+        
+        // Анимация появления/исчезновения
+        matrixRain.style.animation = 'matrixFade 1.5s forwards';
+        
+        // Ждем окончания анимации
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        matrixRain.remove();
+    }
+
+    // Создаем эффект матрицы
+    function createMatrixEffect(container) {
+        const chars = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+        const cols = Math.floor(window.innerWidth / 20);
+        const rows = Math.floor(window.innerHeight / 20);
+        
+        container.style.display = 'grid';
+        container.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+        container.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+        
+        for (let i = 0; i < cols * rows; i++) {
+            const cell = document.createElement('div');
+            cell.style.color = 'var(--matrix-green)';
+            cell.style.textAlign = 'center';
+            cell.style.fontFamily = 'var(--font-mono)';
+            cell.style.opacity = '0';
+            cell.style.animation = `matrixFadeIn ${Math.random() * 0.5 + 0.5}s ${Math.random() * 0.5}s forwards`;
+            cell.textContent = chars[Math.floor(Math.random() * chars.length)];
+            container.appendChild(cell);
+        }
+    }
+
+    // Добавляем стили для анимаций
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes buttonAppear {
+            0% { transform: translateY(20px) rotateX(90deg); opacity: 0; }
+            100% { transform: translateY(0) rotateX(0); opacity: 1; }
+        }
+        
+        @keyframes buttonDisappear {
+            0% { transform: translateY(0) rotateX(0); opacity: 1; }
+            100% { transform: translateY(-20px) rotateX(90deg); opacity: 0; }
+        }
+        
+        @keyframes digitalFlash {
+            0% { opacity: 0; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+        
+        @keyframes matrixFade {
+            0% { opacity: 0; }
+            20% { opacity: 0.9; }
+            80% { opacity: 0.9; }
+            100% { opacity: 0; }
+        }
+        
+        @keyframes matrixFadeIn {
+            0% { opacity: 0; text-shadow: 0 0 10px var(--matrix-green); }
+            50% { opacity: 1; text-shadow: 0 0 20px var(--matrix-green); }
+            100% { opacity: 0; text-shadow: 0 0 5px var(--matrix-green); }
+        }
+        
+        .lang-btn.active {
+            background: var(--primary) !important;
+            color: var(--bg) !important;
+            box-shadow: 0 0 25px rgba(37, 211, 102, 0.7) !important;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Инициализация
+    if (currentLang === 'en') {
+        switchLanguage('en');
+    } else {
+        ruBtn.classList.add('active');
+    }
+}
+
+// ==================== TON КНОПКИ ====================
+function initTonButtons() {
+    const tonAddress = "UQDkFhGpqkkM7Fvz-oDEdW-ABnXkWnk-4q1KMl-6R-AsLmB3";
+    
+    // Кнопка отправки TON
+    const sendTonBtn = document.getElementById('sendTonBtn');
+    sendTonBtn.addEventListener('click', () => {
+        // Анимация нажатия
+        sendTonBtn.style.animation = 'pulse 0.5s';
+        setTimeout(() => sendTonBtn.style.animation = '', 500);
+        
+        const tonLink = `ton://transfer/${tonAddress}`;
+        const tonkeeperLink = `https://app.tonkeeper.com/transfer/${tonAddress}`;
+        
+        window.location.href = tonLink;
+        setTimeout(() => {
+            window.location.href = tonkeeperLink;
+        }, 250);
+    });
+    
+    // Кнопка копирования
+    const copyBtn = document.getElementById('copyAddressBtn');
+    copyBtn.addEventListener('click', async () => {
+        // Эффект копирования
+        copyBtn.style.animation = 'copyPulse 0.5s';
+        setTimeout(() => copyBtn.style.animation = '', 500);
+        
+        try {
+            await navigator.clipboard.writeText(tonAddress);
+            showCopyNotification();
+        } catch (err) {
+            // Fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = tonAddress;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showCopyNotification();
+            } catch (err) {
+                console.error('Copy failed:', err);
+            }
+            document.body.removeChild(textArea);
+        }
+    });
+    
+    // Уведомление о копировании
+    function showCopyNotification() {
+        const lang = localStorage.getItem('preferredLanguage') || 'ru';
+        const notification = document.querySelector(`.copy-notification[data-lang="${lang}"]`);
+        if (notification) {
+            notification.style.animation = 'notificationFade 2s forwards';
+            setTimeout(() => {
+                notification.style.animation = '';
+            }, 2000);
+        }
+    }
+    
+    // Добавляем стили для кнопок
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 31, 204, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 31, 204, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 31, 204, 0); }
+        }
+        
+        @keyframes copyPulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        
+        @keyframes notificationFade {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            20% { opacity: 1; transform: translate(-50%, 0); }
+            80% { opacity: 1; transform: translate(-50%, 0); }
+            100% { opacity: 0; transform: translate(-50%, -20px); }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// ==================== ТЕМА ====================
+function initThemeSystem() {
+    function detectTheme() {
+        const isTelegram = navigator.userAgent.toLowerCase().includes('telegram');
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeParam = urlParams.get('tgTheme');
+        
+        let isDark = false;
+        try {
+            const bgColor = window.getComputedStyle(document.body).backgroundColor;
+            isDark = bgColor === 'rgb(15, 15, 15)' || bgColor === 'rgba(0, 0, 0, 0)';
+        } catch (e) {}
+        
+        return (isTelegram && !themeParam) || themeParam === 'dark' || isDark ? 'dark' : 'light';
+    }
+    
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        
+        // Эффект переключения темы
+        const themeTransition = document.createElement('div');
+        themeTransition.style.position = 'fixed';
+        themeTransition.style.top = '0';
+        themeTransition.style.left = '0';
+        themeTransition.style.width = '100%';
+        themeTransition.style.height = '100%';
+        themeTransition.style.background = theme === 'dark' ? '#000' : '#fff';
+        themeTransition.style.zIndex = '9998';
+        themeTransition.style.mixBlendMode = 'difference';
+        themeTransition.style.animation = 'themeFade 1s forwards';
+        document.body.appendChild(themeTransition);
+        
+        setTimeout(() => {
+            themeTransition.remove();
+        }, 1000);
+    }
+    
+    // Добавляем стили для темы
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes themeFade {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Инициализация темы
+    applyTheme(detectTheme());
+    
+    // Для Android
+    if (navigator.userAgent.toLowerCase().includes('android')) {
+        setTimeout(() => {
+            applyTheme(detectTheme());
+        }, 500);
+    }
+}
+
+// ==================== ИНИЦИАЛИЗАЦИЯ ====================
+document.addEventListener('DOMContentLoaded', () => {
+    initThemeSystem();
+    initLanguageSystem();
+    initTonButtons();
+    
+    // Индикатор загрузки
+    const loader = document.createElement('div');
+    loader.style.position = 'fixed';
+    loader.style.top = '0';
+    loader.style.left = '0';
+    loader.style.width = '0%';
+    loader.style.height = '3px';
+    loader.style.background = 'var(--primary)';
+    loader.style.zIndex = '10000';
+    loader.style.animation = 'loaderProgress 2s forwards';
+    document.body.appendChild(loader);
+    
+    setTimeout(() => loader.remove(), 2000);
+    
+    // Стиль для индикатора загрузки
+    const loaderStyle = document.createElement('style');
+    loaderStyle.textContent = `
+        @keyframes loaderProgress {
+            0% { width: 0%; opacity: 0.5; }
+            50% { width: 80%; opacity: 1; }
+            100% { width: 100%; opacity: 0; }
+        }
+    `;
+    document.head.appendChild(loaderStyle);
+});
+    </script>
+</body>
+</html>
